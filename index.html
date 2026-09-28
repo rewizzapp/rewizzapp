@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rewizz | Revision packs, minus the evening</title>
+  <meta name="description" content="Rewizz is an offline-first revision-pack builder for teachers. Turn existing curriculum and lesson folders into teacher-reviewed revision packs. Beta testers wanted.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23172554'/%3E%3Cpath d='M17 18h30v7H25v10h18v7H25v14h-8V18z' fill='%23ffffff'/%3E%3Cpath d='M41 42l7 14h-9l-6-12h-5v-7h10c4 0 7-2 7-6s-3-6-7-6h-7v-7h8c9 0 15 5 15 13 0 5-2 9-6 11h-7z' fill='%231677FF'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --ink: #0e1628;
+      --navy: #172554;
+      --blue: #1677ff;
+      --blue-dark: #0d5ed7;
+      --paper: #f5f8fc;
+      --surface: #ffffff;
+      --line: #dce6f3;
+      --muted: #667085;
+      --soft: #edf4ff;
+      --green: #1f9a60;
+      --amber: #b97300;
+      --red: #c93a3a;
+      --violet: #6f56d8;
+      --shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+      --shadow-soft: 0 14px 34px rgba(15, 23, 42, 0.08);
+      --radius: 16px;
+      --max: 1160px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #ffffff 0%, #f8fbff 42%, #ffffff 100%);
+      font-family: Inter, Aptos, "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--blue);
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: 1rem;
+      padding: 0.65rem 0.85rem;
+      color: #ffffff;
+      background: var(--navy);
+      border-radius: 10px;
+      transform: translateY(-140%);
+      z-index: 20;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(220, 230, 243, 0.9);
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(16px);
+    }
+
+    .nav {
+      width: min(var(--max), calc(100% - 2rem));
+      margin: 0 auto;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      color: #ffffff;
+      background: var(--navy);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      box-shadow: inset 0 -10px 20px rgba(22, 119, 255, 0.28);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      color: #40506f;
+      font-size: 0.94rem;
+      font-weight: 650;
+    }
+
+    .nav-cta,
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0.72rem 1rem;
+      border-radius: 11px;
+      color: #ffffff;
+      background: var(--blue);
+      border: 1px solid var(--blue);
+      font-weight: 760;
+      box-shadow: 0 12px 22px rgba(22, 119, 255, 0.18);
+    }
+
+    .nav-cta:hover,
+    .button:hover {
+      color: #ffffff;
+      background: var(--blue-dark);
+      border-color: var(--blue-dark);
+    }
+
+    .button.secondary {
+      color: var(--navy);
+      background: #ffffff;
+      border-color: var(--line);
+      box-shadow: none;
+    }
+
+    .button.secondary:hover {
+      color: var(--blue);
+      border-color: rgba(22, 119, 255, 0.35);
+    }
+
+    main {
+      overflow: hidden;
+    }
+
+    section {
+      width: min(var(--max), calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .hero {
+      width: min(1240px, calc(100% - 2rem));
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(2rem, 5vw, 4.25rem);
+      align-items: center;
+      justify-items: center;
+      text-align: center;
+      margin-top: 1.15rem;
+      padding: clamp(4.2rem, 9vw, 7rem) clamp(1rem, 5vw, 5rem);
+      border: 1px solid rgba(220, 230, 243, 0.9);
+      border-radius: 34px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(239, 246, 255, 0.88));
+      box-shadow: 0 1px 0 #ffffff inset;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: fit-content;
+      margin-bottom: 1.25rem;
+      padding: 0.42rem 0.68rem;
+      border: 1px solid rgba(22, 119, 255, 0.24);
+      border-radius: 999px;
+      color: var(--blue-dark);
+      background: #ffffff;
+      font-size: 0.82rem;
+      font-weight: 780;
+    }
+
+    .eyebrow .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 6px rgba(31, 154, 96, 0.12);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      color: var(--navy);
+      letter-spacing: -0.03em;
+      line-height: 1.04;
+    }
+
+    h1 {
+      max-width: 720px;
+      font-size: clamp(3rem, 6vw, 5.6rem);
+      font-weight: 850;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.8rem);
+      font-weight: 820;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 780;
+      letter-spacing: -0.015em;
+    }
+
+    .lead {
+      max-width: 680px;
+      margin: 1.35rem auto 0;
+      color: #2f3c52;
+      font-size: clamp(1.08rem, 2vw, 1.28rem);
+      line-height: 1.55;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.85rem;
+      margin: 2rem 0 0;
+    }
+
+    .hero-note {
+      max-width: 650px;
+      margin: 1.05rem auto 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .trust-strip {
+      margin-top: 2.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.62rem;
+    }
+
+    .trust-pill {
+      padding: 0.58rem 0.72rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.82);
+      color: #3d4a63;
+      font-size: 0.88rem;
+      font-weight: 680;
+    }
+
+    .section-intro {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 2rem;
+      align-items: start;
+      margin-bottom: 2rem;
+    }
+
+    .section-kicker {
+      margin: 0 0 0.7rem;
+      color: var(--blue-dark);
+      font-size: 0.82rem;
+      font-weight: 820;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .section-copy {
+      margin: 0.3rem 0 0;
+      color: #40506f;
+      font-size: 1.04rem;
+    }
+
+    .audience {
+      padding: 4rem 0;
+    }
+
+    .audience-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .audience-panel {
+      padding: 1.3rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.74);
+    }
+
+    .audience-panel p {
+      margin: 0.55rem 0 0;
+      color: var(--muted);
+    }
+
+    .use-list {
+      display: grid;
+      gap: 0.74rem;
+    }
+
+    .use-row {
+      display: grid;
+      grid-template-columns: 12px 1fr;
+      gap: 0.75rem;
+      align-items: start;
+      padding: 0.95rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #ffffff;
+    }
+
+    .use-row:before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      margin-top: 0.45rem;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    .use-row strong {
+      display: block;
+      color: var(--navy);
+      font-weight: 780;
+    }
+
+    .use-row span {
+      display: block;
+      color: var(--muted);
+      margin-top: 0.15rem;
+      font-size: 0.94rem;
+    }
+
+    .evidence {
+      padding: 4rem 0;
+    }
+
+    .evidence-board {
+      padding: clamp(1rem, 3vw, 1.6rem);
+      border: 1px solid rgba(23, 37, 84, 0.1);
+      border-radius: 30px;
+      background: var(--navy);
+      box-shadow: var(--shadow);
+    }
+
+    .evidence-main {
+      max-width: 920px;
+      padding: clamp(1rem, 3vw, 1.8rem);
+      color: #ffffff;
+    }
+
+    .evidence-main h2 {
+      color: #ffffff;
+    }
+
+    .evidence-main p {
+      max-width: 650px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 1.04rem;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(280px, 1fr));
+      gap: 0;
+      margin-top: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .comparison-head,
+    .comparison-cell {
+      padding: clamp(1rem, 2.5vw, 1.35rem);
+      scroll-snap-align: start;
+    }
+
+    .comparison-head {
+      min-height: 170px;
+      color: rgba(255, 255, 255, 0.84);
+    }
+
+    .comparison-head.after,
+    .comparison-cell.after {
+      color: #344054;
+      background: #ffffff;
+      border-left: 1px solid var(--line);
+    }
+
+    .comparison-head.before,
+    .comparison-cell.before {
+      color: rgba(255, 255, 255, 0.84);
+    }
+
+    .panel-label {
+      margin: 0 0 0.7rem;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 0.78rem;
+      font-weight: 820;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .comparison-head.after .panel-label {
+      color: var(--blue-dark);
+    }
+
+    .comparison-head h3 {
+      color: #ffffff;
+      font-size: clamp(1.35rem, 2.4vw, 2rem);
+    }
+
+    .comparison-head.after h3 {
+      color: var(--navy);
+    }
+
+    .comparison-cell {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 0.72rem;
+      align-items: start;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .comparison-cell.after {
+      border-color: var(--line);
+    }
+
+    .comparison-cell:before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      margin-top: 0.45rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .comparison-cell.after:before {
+      background: var(--green);
+      box-shadow: 0 0 0 6px rgba(31, 154, 96, 0.11);
+    }
+
+    .time-proof {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .proof-card {
+      padding: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
+      color: rgba(255, 255, 255, 0.82);
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.92rem;
+    }
+
+    .proof-card strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: #ffffff;
+      font-size: 1.1rem;
+    }
+
+    .source-line {
+      margin: 1rem 0 0;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+
+    .source-line a {
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+    }
+
+    .product {
+      padding: 4rem 0;
+    }
+
+    .product-map {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+      counter-reset: flow-step;
+    }
+
+    .map-row {
+      display: grid;
+      grid-template-columns: minmax(170px, 0.36fr) minmax(0, 1fr) minmax(190px, 0.35fr);
+      gap: 0;
+      border: 1px solid rgba(220, 230, 243, 0.92);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.86) inset, var(--shadow-soft);
+      counter-increment: flow-step;
+    }
+
+    .map-cell {
+      padding: 1rem;
+      border-right: 1px solid var(--line);
+    }
+
+    .map-cell:last-child {
+      border-right: 0;
+    }
+
+    .map-cell.label {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.7rem;
+      align-items: center;
+      color: var(--navy);
+      background: #f8fbff;
+      font-weight: 820;
+    }
+
+    .map-cell.label:before {
+      content: counter(flow-step);
+      width: 28px;
+      height: 28px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 9px;
+      color: #ffffff;
+      background: var(--navy);
+      font-size: 0.82rem;
+      font-weight: 820;
+    }
+
+    .map-cell p {
+      margin: 0;
+      color: #4b5a72;
+    }
+
+    .map-cell small {
+      color: var(--muted);
+      font-weight: 680;
+    }
+
+    .beta {
+      padding: 4rem 0;
+    }
+
+    .beta-box {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 2rem;
+      align-items: center;
+      padding: clamp(1.2rem, 4vw, 2.6rem);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .beta-list {
+      display: grid;
+      gap: 0.65rem;
+      margin-top: 1.1rem;
+    }
+
+    .beta-line {
+      display: flex;
+      gap: 0.7rem;
+      align-items: flex-start;
+      color: #40506f;
+    }
+
+    .beta-line:before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      margin-top: 0.48rem;
+      border-radius: 50%;
+      background: var(--green);
+      flex: 0 0 auto;
+    }
+
+    .beta-form {
+      display: grid;
+      gap: 0.75rem;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #f8fbff;
+    }
+
+    .field {
+      display: grid;
+      gap: 0.32rem;
+    }
+
+    label {
+      color: var(--navy);
+      font-size: 0.83rem;
+      font-weight: 760;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 44px;
+      padding: 0.72rem 0.78rem;
+      border: 1px solid #cbd8eb;
+      border-radius: 12px;
+      color: var(--ink);
+      background: #ffffff;
+      font: inherit;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus,
+    summary:focus,
+    .button:focus,
+    .nav-cta:focus {
+      outline: 3px solid rgba(22, 119, 255, 0.24);
+      outline-offset: 3px;
+    }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+      margin-top: 0.4rem;
+    }
+
+    .form-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .about {
+      padding: 4rem 0;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .about-panel {
+      padding: 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .about-panel p {
+      margin: 0.5rem 0 0;
+      color: #40506f;
+    }
+
+    .about-panel ul {
+      margin: 0.85rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.48rem;
+    }
+
+    .about-panel li {
+      color: #40506f;
+    }
+
+    .faq {
+      padding: 4rem 0 5rem;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1.6rem;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 1rem 1.15rem;
+      color: var(--navy);
+      font-weight: 790;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary:after {
+      content: "+";
+      float: right;
+      color: var(--blue);
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    details[open] summary:after {
+      content: "-";
+    }
+
+    .faq-answer {
+      padding: 0 1.15rem 1rem;
+      color: #40506f;
+    }
+
+    .faq-answer p {
+      margin: 0.35rem 0 0;
+    }
+
+    .faq-answer ul {
+      margin: 0.65rem 0 0;
+      padding-left: 1.1rem;
+    }
+
+    .faq-answer li {
+      margin: 0.35rem 0;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .footer-inner {
+      width: min(var(--max), calc(100% - 2rem));
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.5rem 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .footer-inner a {
+      border-bottom: 1px solid rgba(102, 112, 133, 0.32);
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .section-intro,
+      .audience-grid,
+      .time-proof,
+      .beta-box,
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .map-row {
+        grid-template-columns: 1fr;
+      }
+
+      .map-cell {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .map-cell:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav {
+        min-height: auto;
+        padding: 0.8rem 0;
+        align-items: flex-start;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 3rem;
+      }
+
+      .comparison-grid {
+        grid-template-columns: repeat(2, minmax(250px, 1fr));
+      }
+
+      .comparison-head,
+      .comparison-cell {
+        padding: 0.95rem;
+      }
+
+      .footer-inner {
+        display: block;
+      }
+
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="#main" aria-label="Rewizz home">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        <span>Rewizz</span>
+      </a>
+      <div class="nav-links" aria-label="Page sections">
+        <a href="#who">Who it is for</a>
+        <a href="#evidence">Time saved</a>
+        <a href="#about">About</a>
+        <a href="#faq">FAQ</a>
+        <a class="nav-cta" href="#beta">Join beta</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div>
+        <div class="eyebrow"><span class="pulse" aria-hidden="true"></span>Beta testing phase. Teachers and schools wanted.</div>
+        <h1 id="hero-title">Revision packs, minus the evening.</h1>
+        <p class="lead">Rewizz helps teachers turn existing curriculum files, lesson slides and worksheets into controlled revision packs that they can review, edit and export. It is built for the real mess of teaching folders, repeated slides, wrong-subject files and last-minute exam preparation.</p>
+        <div class="hero-actions">
+          <a class="button" href="#beta">Apply to test the beta</a>
+          <a class="button secondary" href="#what-app-does">See how Rewizz works</a>
+        </div>
+        <p class="hero-note">Current focus: UAE-first beta with individual teachers, department leads and schools using Windows, macOS or Chromebook workflows.</p>
+        <div class="trust-strip" aria-label="Product principles">
+          <span class="trust-pill">Teacher chooses final content</span>
+          <span class="trust-pill">Local-first by default</span>
+          <span class="trust-pill">No broad Drive scanning</span>
+          <span class="trust-pill">Source traceability</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="who" class="audience" aria-labelledby="who-title">
+      <div class="section-intro">
+        <div>
+          <p class="section-kicker">Who it is for</p>
+          <h2 id="who-title">Made for teachers with real folders, not perfect content libraries.</h2>
+        </div>
+        <p class="section-copy">Rewizz is not a generic slide generator. The beta is focused on teachers who already have curriculum documents, lesson decks, worksheets, images and links, but need a safer way to turn those materials into revision packs without manually rebuilding everything.</p>
+      </div>
+
+      <div class="audience-grid">
+        <div class="audience-panel">
+          <h3>Best fit during beta</h3>
+          <p>Individual teachers, tutors, department leads and UAE schools that want to test the workflow using real curriculum and lesson folders.</p>
+        </div>
+        <div class="use-list">
+          <div class="use-row">
+            <div>
+              <strong>End-of-term and year-end revision</strong>
+              <span>Select topics across terms and build packs from material already taught.</span>
+            </div>
+          </div>
+          <div class="use-row">
+            <div>
+              <strong>Department pack preparation</strong>
+              <span>Create consistent revision outputs while keeping each teacher in control of included content.</span>
+            </div>
+          </div>
+          <div class="use-row">
+            <div>
+              <strong>Chromebook and laptop workflows</strong>
+              <span>Designed for Windows, macOS and installable ChromeOS PWA testing, subject to hardware limits.</span>
+            </div>
+          </div>
+          <div class="use-row">
+            <div>
+              <strong>Confidential teaching material</strong>
+              <span>Built around local processing by default, narrow online exceptions and no vendor-side lesson-content storage.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="evidence" class="evidence" aria-labelledby="evidence-title">
+      <div class="evidence-board">
+        <div class="evidence-main">
+          <p class="section-kicker" style="color:#9cc4ff">Time saved for teachers</p>
+          <h2 id="evidence-title">Less revision-pack prep. More time for teaching.</h2>
+          <p>Rewizz is built to reduce the repeated admin work around revision packs: searching folders, removing duplicates, checking topic fit, formatting outputs and rebuilding answer keys. The teacher still reviews and approves the final pack.</p>
+        </div>
+
+        <div class="comparison-grid" aria-label="Before and after Rewizz">
+          <div class="comparison-head before">
+            <p class="panel-label">Before Rewizz</p>
+            <h3>Revision prep is mostly manual.</h3>
+          </div>
+
+          <div class="comparison-head after">
+            <p class="panel-label">After Rewizz</p>
+            <h3>The teacher reviews a prepared candidate pack.</h3>
+          </div>
+
+          <div class="comparison-cell before">Search old slides, PDFs, worksheets and links across different folders.</div>
+          <div class="comparison-cell after">Select the curriculum and approved lesson folders once.</div>
+
+          <div class="comparison-cell before">Open files one by one to find the right topic and avoid duplicates.</div>
+          <div class="comparison-cell after">See candidate groups by topic, with duplicates and off-topic material held back.</div>
+
+          <div class="comparison-cell before">Copy, paste, reformat and rebuild packs under deadline pressure.</div>
+          <div class="comparison-cell after">Edit, approve and export instead of rebuilding the pack from scratch.</div>
+
+          <div class="comparison-cell before">Check later whether the pack still matches what was actually taught.</div>
+          <div class="comparison-cell after">Keep source traceability and final teacher control before students receive anything.</div>
+        </div>
+
+        <div class="time-proof" aria-label="Where Rewizz can save time">
+          <div class="proof-card"><strong>Search less</strong>Approved folders become a subject workspace, so teachers are not repeatedly hunting for the same lesson material.</div>
+          <div class="proof-card"><strong>Review faster</strong>Topic groups, duplicates and possible wrong-subject files are separated before the teacher starts editing.</div>
+          <div class="proof-card"><strong>Export cleaner</strong>PDF, PowerPoint, Word, HTML and answer-key exports are prepared from the reviewed pack instead of separate manual rebuilds.</div>
+        </div>
+
+        <p class="source-line">External workload data remains useful context: OECD TALIS reports that lesson planning accounts for 14% of teachers' working time, and TALIS 2018 reported 6.5 hours per week on lesson planning and preparation. The beta will test Rewizz's own time-saving impact with real teacher folders. <a href="https://www.oecd.org/en/publications/2025/10/results-from-talis-2024_28fbde1d/full-report/the-demands-of-teaching_0e941e2f.html" target="_blank" rel="noreferrer">TALIS 2024</a> <a href="https://www.oecd.org/en/publications/2019/06/talis-2018-results-volume-i_03d63387/full-report/component-7.html" target="_blank" rel="noreferrer">TALIS 2018</a></p>
+      </div>
+    </section>
+
+    <section id="what-app-does" class="product" aria-labelledby="product-title">
+      <div class="section-intro">
+        <div>
+          <p class="section-kicker">What the app does</p>
+          <h2 id="product-title">Curriculum first. Folder second. Teacher approval always.</h2>
+        </div>
+        <p class="section-copy">The product flow is deliberately controlled. Rewizz builds a subject workspace from the curriculum, checks lesson material against that workspace, proposes candidate revision content and keeps the teacher as the final decision-maker before export.</p>
+      </div>
+
+      <div class="product-map" aria-label="Product workflow map">
+        <div class="map-row">
+          <div class="map-cell label">Start with curriculum</div>
+          <div class="map-cell"><p>Import the subject curriculum so Rewizz can understand terms, topics, sub-topics and learning objectives before it reads lesson folders.</p></div>
+          <div class="map-cell"><small>Reason: prevents generic pack generation outside the taught scope.</small></div>
+        </div>
+        <div class="map-row">
+          <div class="map-cell label">Scan approved folders</div>
+          <div class="map-cell"><p>The teacher selects folders or files. Rewizz processes supported lesson formats, detects duplicates and separates likely wrong-subject material.</p></div>
+          <div class="map-cell"><small>No silent disk crawling. No full Drive scan.</small></div>
+        </div>
+        <div class="map-row">
+          <div class="map-cell label">Build candidate groups</div>
+          <div class="map-cell"><p>For selected topics, Rewizz proposes restrained slide groups with source traceability, rather than dumping every raw slide into a pack.</p></div>
+          <div class="map-cell"><small>Teacher selects what enters the pack.</small></div>
+        </div>
+        <div class="map-row">
+          <div class="map-cell label">Edit and export</div>
+          <div class="map-cell"><p>Teachers can edit text, reorder slides, add questions, attach links and export local formats such as PDF, PowerPoint, Word, HTML and answer keys.</p></div>
+          <div class="map-cell"><small>Google Docs and Slides are explicit online exports only.</small></div>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="beta" class="beta" aria-labelledby="beta-title">
+      <div class="beta-box">
+        <div>
+          <p class="section-kicker">Beta testing</p>
+          <h2 id="beta-title">Help test Rewizz with real teaching material.</h2>
+          <p class="section-copy">Rewizz is presently in beta testing phase and is seeking teachers, tutors, department leads and schools willing to test the workflow with genuine curriculum files and lesson folders.</p>
+          <div class="beta-list" aria-label="Beta tester expectations">
+            <div class="beta-line">Use your own curriculum and teaching material in a controlled test workspace.</div>
+            <div class="beta-line">Report where source matching, topic selection, export quality or privacy wording needs improvement.</div>
+            <div class="beta-line">Validate whether the pack is useful enough to use with students after teacher review.</div>
+          </div>
+        </div>
+
+        <form class="beta-form" aria-label="Beta interest form" action="mailto:rewizz.beta@gmail.com?subject=Rewizz%20Beta%20Testing%20Request" method="post" enctype="text/plain">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" autocomplete="name" placeholder="Your name">
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="you@school.com">
+          </div>
+          <div class="field">
+            <label for="role">I am a</label>
+            <select id="role" name="role">
+              <option>Teacher</option>
+              <option>Tutor</option>
+              <option>Department lead</option>
+              <option>School leader or administrator</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">What would you like to test?</label>
+            <textarea id="message" name="message" placeholder="Example: Year 6 Maths revision, I have PPTX lessons and PDF worksheets."></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="button" type="submit">Send beta request</button>
+            <p class="form-note">Opens an email addressed to rewizz.beta@gmail.com.</p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="about" class="about" aria-labelledby="about-title">
+      <div class="section-intro">
+        <div>
+          <p class="section-kicker">About Rewizz</p>
+          <h2 id="about-title">An offline-first revision-pack builder for busy teachers.</h2>
+        </div>
+        <p class="section-copy">Rewizz is being built as a teacher productivity app for Windows, macOS and Chromebook PWA use. The design principle is simple: software can sort, index and prepare suggestions, but the teacher remains responsible for scope, selection, edits and final use.</p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-panel">
+          <h3>Core product position</h3>
+          <p>Rewizz turns existing curriculum and lesson material into teacher-reviewed revision packs. It supports local processing by default, source traceability and explicit export choices.</p>
+          <ul>
+            <li>Designed for curriculum-aligned revision preparation.</li>
+            <li>Built to handle duplicates, recap slides and mixed folder quality.</li>
+            <li>Exports are intended to remain editable and portable.</li>
+          </ul>
+        </div>
+        <div class="about-panel">
+          <h3>Current beta boundaries</h3>
+          <p>The beta is for validation and controlled testing, not a general availability release. Feature performance and platform coverage are being tested with teachers and schools.</p>
+          <ul>
+            <li>No claim of full public release readiness.</li>
+            <li>No fake school logos, testimonials or adoption numbers.</li>
+            <li>No automated publishing without teacher review.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="faq" aria-labelledby="faq-title">
+      <p class="section-kicker">FAQ and data protection</p>
+      <h2 id="faq-title">Privacy and Data Protection is an integral part of our product.</h2>
+      <div class="faq-list">
+        <details open>
+          <summary>How does Rewizz support UAE confidentiality and data-protection obligations?</summary>
+          <div class="faq-answer">
+            <p>Rewizz is designed around data minimisation, purpose limitation and local processing principles aligned with the UAE Personal Data Protection Law framework, including Federal Decree-Law No. 45 of 2021. The beta does not present itself as a formal legal certification.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>What teaching data does Rewizz handle?</summary>
+          <div class="faq-answer">
+            <p>When a teacher chooses files or folders, the app may process curriculum files, lesson slides, worksheets, extracted text, images, links, topic maps, embeddings, local preferences, pack drafts and export jobs inside the selected workspace.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>What is not uploaded or retained by Rewizz by default?</summary>
+          <div class="faq-answer">
+            <ul>
+              <li>Lesson content is not uploaded to vendor servers by default.</li>
+              <li>Student data, prompts, extracted lesson text and local memory are not retained in the vendor cloud by default.</li>
+              <li>Wrong-subject or unapproved material is not allowed into memory, embeddings or generation unless the teacher overrides it.</li>
+              <li>Payment card details are not stored by the app and should remain with the payment provider.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>Does Rewizz require student accounts, marks or behavioural data?</summary>
+          <div class="faq-answer">
+            <p>No. V1 is scoped as a teacher productivity tool. It does not require student logins, student analytics, automated grading, behaviour tracking, parent portals or LMS-style student records.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Can school administrators see teacher lesson folders?</summary>
+          <div class="faq-answer">
+            <p>No. In the intended school licence model, administrators manage seats, licence status and account access. They do not receive access to teacher files, local workspaces, local memory or draft packs.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Does Rewizz scan Google Drive?</summary>
+          <div class="faq-answer">
+            <p>No broad Drive scan is planned for V1. Google access is limited to teacher-initiated Google Docs or Google Slides export using narrow permissions. Google export requires internet sign-in and should be optional.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>How are local files protected?</summary>
+          <div class="faq-answer">
+            <p>The app is designed to read only user-approved files or folders. Sensitive tokens and selected metadata should use local secret storage or encryption, depending on platform. Source files remain unchanged unless the teacher deliberately exports or saves a new output.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Can a teacher delete local Rewizz data?</summary>
+          <div class="faq-answer">
+            <p>The product design requires workspace and memory deletion controls. Deleting a Rewizz workspace should remove derived indexes, topic maps and local memory for that workspace without deleting the teacher's original lesson files.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>What should beta testers avoid uploading or sharing?</summary>
+          <div class="faq-answer">
+            <p>Beta testers should avoid sharing unnecessary student personal data, confidential school records or third-party licensed content outside their permitted use. Rewizz should be tested with permissioned teaching material and with school approval where applicable.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Where can I read more about the legal framework?</summary>
+          <div class="faq-answer">
+            <p>For public reference, see the UAE Government portal on <a href="https://u.ae/en/about-the-uae/digital-uae/data/data-protection-laws" target="_blank" rel="noreferrer">data protection laws</a>.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>Rewizz beta. Teachers and schools wanted.</div>
+      <div><a href="#beta">Join beta</a></div>
+    </div>
+  </footer>
+</body>
+</html>
